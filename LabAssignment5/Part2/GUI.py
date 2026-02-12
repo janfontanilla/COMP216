@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 
 class GUI(tk.Tk):
 
@@ -68,9 +68,25 @@ class GUI(tk.Tk):
                        offvalue='')\
             .grid(row=7, column=1, sticky='w', padx=10)
 
+        # Button row (Reset, OK, Exit)
+        btn_frame = tk.Frame(self)
+        btn_frame.grid(row=8, column=0, columnspan=2, pady=15, padx=10, sticky='ew')
+        # Make buttons spread out and resize with the window
+        btn_frame.columnconfigure(0, weight=1)
+        btn_frame.columnconfigure(1, weight=1)
+        btn_frame.columnconfigure(2, weight=1)
+
         # Reset button
-        tk.Button(self, text='Reset', command=self.reset_form, width=20)\
-            .grid(row=8, column=1, pady=15, sticky='e', padx=10)
+        tk.Button(btn_frame, text='Reset', command=self.reset_form, width=20)\
+            .grid(row=0, column=0, sticky='w', padx=10)
+        
+        # OK button - Mohammad
+        tk.Button(btn_frame, text='OK', command=self.ok_action, width=20)\
+            .grid(row=0, column=1, sticky='ew', padx=10)
+        
+        # Exit button - Mohammad
+        tk.Button(btn_frame, text='Exit', command=self.destroy, width=20)\
+            .grid(row=0, column=2, sticky='e', padx=10)
 
         self.reset_form()
 
@@ -85,6 +101,40 @@ class GUI(tk.Tk):
         self.comp100.set('COMP100')
         self.comp213.set('COMP213')
         self.comp120.set('COMP120')
+
+    # Retrieves information to display in popup
+    # Mohammad
+    def ok_action(self):
+        # Safely gather values for the popup, avoiding raw None
+        name = self.name_entry.get() or "N/A"
+
+        residency_code = self.residency_var.get()
+        if residency_code == 'dom':
+            residency = 'Domestic'
+        elif residency_code == 'intl':
+            residency = 'International'
+        else:
+            residency = 'N/A'
+
+        program = self.program_combo.get() or "N/A"
+
+        courses = ", ".join(filter(None, [
+            self.comp120.get(),
+            self.comp100.get(),
+            self.comp213.get()
+        ]))
+        if not courses:
+            courses = "None"
+
+        # Displays information in popup
+        message = (
+            f"Name: {name}\n"
+            f"Residency: {residency}\n"
+            f"Program: {program}\n"
+            f"Courses: {courses}"
+        )
+
+        messagebox.showinfo("Information", message)
 
 
 if __name__ == "__main__":
