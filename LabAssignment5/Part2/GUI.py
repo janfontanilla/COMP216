@@ -29,17 +29,19 @@ class GUI(tk.Tk):
         self.residency_var = tk.StringVar()
 
         tk.Radiobutton(self, text='Domestic',
-                       variable=self.residency_var, value='dom').grid(row=2, column=1, sticky='w', padx=10)
+                       variable=self.residency_var, value='dom')\
             .grid(row=2, column=1, sticky='w', padx=10)
 
         tk.Radiobutton(self, text='International',
-                       variable=self.residency_var, value='intl').grid(row=3, column=1, sticky='w', padx=10)
+                       variable=self.residency_var, value='intl')\
+            .grid(row=3, column=1, sticky='w', padx=10)
 
         # Program combobox
         tk.Label(self, text='Program').grid(row=4, column=0, sticky='w', padx=10, pady=5)
         self.program_combo = ttk.Combobox(self,
                                           values=['AI', 'Gaming', 'Health', 'Software'])
-        self.program_combo.grid(row=4, column=1, sticky='ew', padx=10, pady=5)
+        self.program_combo\
+            .grid(row=4, column=1, sticky='ew', padx=10, pady=5)
 
         # Courses checkboxes
         tk.Label(self, text='Courses').grid(row=5, column=0, sticky='w', padx=10, pady=5)
@@ -51,20 +53,24 @@ class GUI(tk.Tk):
         tk.Checkbutton(self, text='Programming I',
                        variable=self.comp100,
                        onvalue='COMP100',
-                       offvalue='').grid(row=5, column=1, sticky='w', padx=10)
+                       offvalue='')\
+            .grid(row=5, column=1, sticky='w', padx=10)
 
         tk.Checkbutton(self, text='Web Page Design',
                        variable=self.comp213,
-                       onvalue='COMP213',
-                       offvalue='').grid(row=6, column=1, sticky='w', padx=10)
+                       onvalue='COMP213',   
+                       offvalue='')\
+            .grid(row=6, column=1, sticky='w', padx=10)
 
         tk.Checkbutton(self, text='Software Engineering',
                        variable=self.comp120,
-                       onvalue='COMP120',
-                       offvalue='').grid(row=7, column=1, sticky='w', padx=10)
+                       onvalue='COMP120',   
+                       offvalue='')\
+            .grid(row=7, column=1, sticky='w', padx=10)
 
         # Reset button
-        tk.Button(self, text='Reset', command=self.reset_form, width=20).grid(row=8, column=1, pady=15, sticky='e', padx=10)
+        tk.Button(self, text='Reset', command=self.reset_form, width=20)\
+            .grid(row=8, column=1, pady=15, sticky='e', padx=10)
 
         self.reset_form()
 
