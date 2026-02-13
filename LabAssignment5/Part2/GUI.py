@@ -9,6 +9,13 @@ class GUI(tk.Tk):
         self.title('Centennial College')
         self.geometry("600x500")
 
+        default_text_size = ('Arial', 10)
+
+        # Match all label/radio/check backgrounds to window to avoid white boxes
+        self.configure(bg="#4CAF50")
+        label_bg = "#4CAF50"
+        label_fg = "black"
+
         # Go through all the rows and columns and give them weight to make them move
         for row in range(9):
             self.rowconfigure(row, weight=1)
@@ -17,34 +24,41 @@ class GUI(tk.Tk):
 
         # Header
         header_font = ('Arial', 20, 'bold')
-        tk.Label(self, text='ICET Student Survey', font=header_font).grid(row=0, column=0, columnspan=2, pady=10, sticky='n')
+        tk.Label(self, text='ICET Student Survey', font=header_font, bg=label_bg, fg=label_fg)\
+            .grid(row=0, column=0, columnspan=2, pady=10, sticky='n')
 
         # Full name
-        tk.Label(self, text='Full name').grid(row=1, column=0, sticky='w', padx=10, pady=5)
-        self.name_entry = tk.Entry(self, width=30)
+        tk.Label(self, text='Full name', font=default_text_size, bg=label_bg, fg=label_fg)\
+            .grid(row=1, column=0, sticky='w', padx=10, pady=5)
+        self.name_entry = tk.Entry(self, width=30, font=default_text_size)
         self.name_entry.grid(row=1, column=1, sticky='ew', padx=10, pady=5)
 
         # Residency radio buttons
-        tk.Label(self, text='Residency').grid(row=2, column=0, sticky='w', padx=10, pady=5)
+        tk.Label(self, text='Residency', font=default_text_size, bg=label_bg, fg=label_fg)\
+            .grid(row=2, column=0, sticky='w', padx=10, pady=5)
         self.residency_var = tk.StringVar()
 
         tk.Radiobutton(self, text='Domestic',
-                       variable=self.residency_var, value='dom')\
+                       variable=self.residency_var, value='dom', font=default_text_size,
+                       bg=label_bg, fg=label_fg, selectcolor=label_bg, activebackground=label_bg, activeforeground=label_fg)\
             .grid(row=2, column=1, sticky='w', padx=10)
 
         tk.Radiobutton(self, text='International',
-                       variable=self.residency_var, value='intl')\
+                       variable=self.residency_var, value='intl', font=default_text_size,
+                       bg=label_bg, fg=label_fg, selectcolor=label_bg, activebackground=label_bg, activeforeground=label_fg)\
             .grid(row=3, column=1, sticky='w', padx=10)
 
         # Program combobox
-        tk.Label(self, text='Program').grid(row=4, column=0, sticky='w', padx=10, pady=5)
+        tk.Label(self, text='Program', font=default_text_size, bg=label_bg, fg=label_fg)\
+            .grid(row=4, column=0, sticky='w', padx=10, pady=5)
         self.program_combo = ttk.Combobox(self,
-                                          values=['AI', 'Gaming', 'Health', 'Software'])
+                                          values=['AI', 'Gaming', 'Health', 'Software'], font=default_text_size)
         self.program_combo\
             .grid(row=4, column=1, sticky='ew', padx=10, pady=5)
 
         # Courses checkboxes
-        tk.Label(self, text='Courses').grid(row=5, column=0, sticky='w', padx=10, pady=5)
+        tk.Label(self, text='Courses', font=default_text_size, bg=label_bg, fg=label_fg)\
+            .grid(row=5, column=0, sticky='w', padx=10, pady=5)
 
         self.comp100 = tk.StringVar()
         self.comp213 = tk.StringVar()
@@ -53,24 +67,30 @@ class GUI(tk.Tk):
         tk.Checkbutton(self, text='Programming I',
                        variable=self.comp100,
                        onvalue='COMP100',
-                       offvalue='')\
+                       offvalue='', 
+                       font=default_text_size,
+                       bg=label_bg, fg=label_fg, selectcolor=label_bg, activebackground=label_bg, activeforeground=label_fg)\
             .grid(row=5, column=1, sticky='w', padx=10)
 
         tk.Checkbutton(self, text='Web Page Design',
                        variable=self.comp213,
-                       onvalue='COMP213',   
-                       offvalue='')\
+                       onvalue='COMP213',
+                       offvalue='',
+                       font=default_text_size,
+                       bg=label_bg, fg=label_fg, selectcolor=label_bg, activebackground=label_bg, activeforeground=label_fg)\
             .grid(row=6, column=1, sticky='w', padx=10)
 
         tk.Checkbutton(self, text='Software Engineering',
                        variable=self.comp120,
-                       onvalue='COMP120',   
-                       offvalue='')\
+                       onvalue='COMP120',
+                       offvalue='',
+                       font=default_text_size,
+                       bg=label_bg, fg=label_fg, selectcolor=label_bg, activebackground=label_bg, activeforeground=label_fg)\
             .grid(row=7, column=1, sticky='w', padx=10)
 
         # Button row (Reset, OK, Exit)
-        btn_frame = tk.Frame(self)
-        btn_frame.grid(row=8, column=0, columnspan=2, pady=15, padx=10, sticky='ew')
+        btn_frame = tk.Frame(self, bg=label_bg)
+        btn_frame.grid(row=8, column=0, columnspan=2, pady=0, padx=10, sticky='ew')
         # Make buttons spread out and resize with the window
         btn_frame.columnconfigure(0, weight=1)
         btn_frame.columnconfigure(1, weight=1)
@@ -78,15 +98,15 @@ class GUI(tk.Tk):
 
         # Reset button
         tk.Button(btn_frame, text='Reset', command=self.reset_form, width=20)\
-            .grid(row=0, column=0, sticky='w', padx=10)
+            .grid(row=0, column=0, sticky='w', padx=0)
         
         # OK button - Mohammad
         tk.Button(btn_frame, text='OK', command=self.ok_action, width=20)\
-            .grid(row=0, column=1, sticky='ew', padx=10)
+            .grid(row=0, column=1, sticky='ew', padx=0)
         
         # Exit button - Mohammad
         tk.Button(btn_frame, text='Exit', command=self.destroy, width=20)\
-            .grid(row=0, column=2, sticky='e', padx=10)
+            .grid(row=0, column=2, sticky='e', padx=0)
 
         self.reset_form()
 
