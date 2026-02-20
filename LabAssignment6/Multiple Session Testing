@@ -1,0 +1,92 @@
+MULTIPLE SESSION TEST INSTRUCTIONS
+==================================
+
+This document explains how to test multiple client sessions using the
+Tkinter GUI and the Flask API server.
+
+----------------------------------
+1. START THE SERVER
+----------------------------------
+1. Open a terminal.
+2. Navigate to the folder containing app.py.
+3. Run:
+
+    python app.py
+
+4. Leave the server running.
+
+----------------------------------
+2. OPEN MULTIPLE CLIENT WINDOWS
+----------------------------------
+1. Open a second terminal window.
+2. Run the client:
+
+    python client_GUI.py
+
+3. Open a third terminal window.
+4. Run the client again:
+
+    python client_GUI.py
+
+You should now have TWO (or more) ImageClient windows open at the same time.
+
+Each window represents a separate "session."
+
+----------------------------------
+3. VERIFY THAT SESSIONS ARE INDEPENDENT
+----------------------------------
+
+TEST A — Fetching Images
+------------------------
+1. In each client window, click "Fetch Images".
+2. Both dropdowns should show the same list of images.
+3. Selecting an image in one window should NOT affect the other window.
+
+TEST B — Uploading Images
+-------------------------
+1. In Client Window A, click "Upload Image".
+2. Choose any image file.
+3. After upload, click "Fetch Images" in BOTH windows.
+4. The new image should appear in both dropdowns.
+
+This confirms that each session updates independently but sees the same server data.
+
+TEST C — Deleting Images
+------------------------
+1. In Client Window B, select an image.
+2. Click "Delete Image".
+3. In BOTH windows, click "Fetch Images".
+4. The deleted image should disappear from both dropdowns.
+
+This confirms that actions in one session are reflected across all sessions.
+
+TEST D — Loading Images in Different Formats
+--------------------------------------------
+1. In Client Window A, select an image.
+2. Choose a format (e.g., JPEG) from the format dropdown.
+3. Click "Load in Format".
+4. The converted image should display in Window A only.
+5. Window B remains unchanged until the user interacts with it.
+
+This confirms that each session displays images independently.
+
+----------------------------------
+4. OPTIONAL: OPEN MORE SESSIONS
+----------------------------------
+You can open 3, 4, or more client windows.  
+Each one behaves as its own session.
+
+----------------------------------
+5. WHAT "MULTIPLE SESSIONS" MEANS HERE
+----------------------------------
+- Each client window runs independently.
+- Each window keeps its own selected image, format, and display.
+- All windows communicate with the same server.
+- Uploads and deletions affect the shared image directory.
+- Viewing and converting images is session‑local.
+
+This demonstrates correct multi-session behavior for a stateless HTTP API.
+
+----------------------------------
+END OF FILE
+----------------------------------
