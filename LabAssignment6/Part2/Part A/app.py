@@ -1,3 +1,4 @@
+import uuid
 from flask import Flask, jsonify
 from werkzeug.exceptions import HTTPException
 
@@ -35,6 +36,40 @@ def delete_image(filename):
     try:
         os.remove(filepath)
         return {"message": f"{filename} deleted successfully"}
+    except Exception as e:
+        return {"error": str(e)}, 500
+
+# Extra: Retrieval of images in other formats
+@app.route("/convert-image/<filename>", methods=["GET"])
+def convert_image(filename):
+    filepath = os.path.join(IMAGES_DIR, filename)
+
+    if not os.path.exists(filepath):
+        return {"error": "File not found"}, 404
+
+    requested_format = request.args.get("format")
+    if not requested_format:
+        return {"error": "Missing ?format= parameter"}, 400
+
+    try:
+        img = Image.open(filepath)
+
+        # Create a unique temporary filename
+        unique = uuid.uuid4().hex
+        temp_name = f"temp_{unique}.{requested_format.lower()}"
+        temp_path = os.path.join(IMAGES_DIR, temp_name)
+
+        # Convert and save
+        img.save(temp_path, requested_format.upper())
+
+        return {
+            "filename": temp_name,
+            "format": requested_format.upper(),
+            "size": img.size,
+            "mode": img.mode,
+            "url": f"{request.host_url}images/{temp_name}"
+        }
+
     except Exception as e:
         return {"error": str(e)}, 500
 
