@@ -24,6 +24,19 @@ def uploads():
     # Accept image upload and save to /images, convert to PNG.
     return {"message": "TODO"}, 501
 
+# Extra: DELETE functionality
+@app.route("/delete-image/<filename>", methods=["DELETE"])
+def delete_image(filename):
+    filepath = os.path.join(IMAGES_DIR, filename)
+
+    if not os.path.exists(filepath):
+        return {"error": "File not found"}, 404
+
+    try:
+        os.remove(filepath)
+        return {"message": f"{filename} deleted successfully"}
+    except Exception as e:
+        return {"error": str(e)}, 500
 
 if __name__ == "__main__":
     app.run(debug=True, use_reloader=False, port=5000, host="0.0.0.0")
