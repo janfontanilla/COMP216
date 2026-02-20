@@ -1,5 +1,5 @@
 import uuid
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_from_directory
 from werkzeug.exceptions import HTTPException
 
 app = Flask(__name__)
@@ -72,6 +72,11 @@ def convert_image(filename):
 
     except Exception as e:
         return {"error": str(e)}, 500
+
+# Serve image files
+@app.route("/images/<filename>", methods=["GET"])
+def serve_image(filename):
+    return send_from_directory(IMAGES_DIR, filename)
 
 if __name__ == "__main__":
     app.run(debug=True, use_reloader=False, port=5000, host="0.0.0.0")
