@@ -1,6 +1,8 @@
 import uuid
-from flask import Flask, jsonify, send_from_directory
+import os
+from flask import Flask, jsonify, send_from_directory, request
 from werkzeug.exceptions import HTTPException
+from PIL import Image
 
 app = Flask(__name__)
 
