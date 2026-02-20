@@ -15,17 +15,26 @@ def image_list():
     # Return list of available PNG images in /images.
     return {"images": []}
 
+# above code was not working for me so added this but commented it out
+# @app.route("/image-list", methods=["GET"]) def image_list(): # >>> ADD THIS images = [] for f in os.listdir(IMAGES_DIR): if f.lower().endswith(".png"): images.append(f) return {"images": images}
+
 # Retrieve image and properties (format, original size, mode).
 @app.route("/get-image/<filename>", methods=["GET"])
 def get_image(filename):
     # Return requested image and properties (format, original size, mode).
     return {"filename": filename, "format": None, "size": None, "mode": None}, 404
 
+# above code was not working for me so I added this but commented it out
+# @app.route("/get-image/<filename>", methods=["GET"]) def get_image(filename): filepath = os.path.join(IMAGES_DIR, filename) if not os.path.exists(filepath): return {"filename": filename, "format": None, "size": None, "mode": None}, 404 img = Image.open(filepath) return { "filename": filename, "format": img.format, "size": img.size, "mode": img.mode, "url": f"{request.host_url}images/{filename}" }
+
 # Accept image upload, save to /images, convert to PNG.
 @app.route("/uploads", methods=["POST"])
 def uploads():
     # Accept image upload and save to /images, convert to PNG.
     return {"message": "TODO"}, 501
+
+# above code was not working for me so I added this but commented it out
+# @app.route("/uploads", methods=["POST"]) def uploads(): if "file" not in request.files: return {"message": "No file uploaded"}, 400 file = request.files["file"] img = Image.open(file) new_name = f"{uuid.uuid4().hex}.png" save_path = os.path.join(IMAGES_DIR, new_name) img.save(save_path, "PNG") return {"message": "Image uploaded", "filename": new_name}
 
 # Extra: DELETE functionality
 @app.route("/delete-image/<filename>", methods=["DELETE"])
