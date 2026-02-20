@@ -2,6 +2,7 @@
 import requests
 import time
 import threading
+import os
 from requests.exceptions import HTTPError
 
 IMAGE_URLS = [
@@ -19,6 +20,10 @@ IMAGE_URLS = [
     'https://images.unsplash.com/photo-1469765904976-5f3afbf59dfb',
 ]
 
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+DOWNLOAD_DIR = os.path.join(SCRIPT_DIR, "images")
+os.makedirs(DOWNLOAD_DIR, exist_ok=True)
+
 
 # part A: download a single file from a given URL
 def download_file(url):
@@ -31,11 +36,12 @@ def download_file(url):
         print(f'other error occurred: {e}')
     else:
         filename = url.split('/')[-1] + '.jpg'  #extract the last part of the url to use as the filename
+        filepath = os.path.join(DOWNLOAD_DIR, filename)
 
-        with open(filename, 'wb') as file:
+        with open(filepath, 'wb') as file:
             file.write(response.content)
 
-        print(f'downloaded: {filename}')
+        print(f'downloaded: {filename} to: {filepath}')
 
 
 # part B: download all images sequentially and time the operation

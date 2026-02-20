@@ -49,8 +49,15 @@ class ImageClient(tk.Tk):
     def fetch_images(self):
         try:
             response = requests.get(f"{SERVER_URL}/image-list")
-            images = response.json()
+            data = response.json()
+            images = data.get("images", [])
             self.dropdown['values'] = images
+
+            if images:
+                self.dropdown.set(images[0])
+            else:
+                self.dropdown.set("")
+
         except Exception as e:
             messagebox.showerror("Error", str(e))
 

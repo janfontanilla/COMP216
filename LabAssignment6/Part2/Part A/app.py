@@ -7,13 +7,16 @@ from PIL import Image
 app = Flask(__name__)
 
 # Images stored here
-IMAGES_DIR = "images"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+IMAGES_DIR = os.path.join(BASE_DIR, "..", "..", "Part1", "images")
+os.makedirs(IMAGES_DIR, exist_ok=True)
 
 # Retrieve list of available PNG images in /images.
 @app.route("/image-list", methods=["GET"])
 def image_list():
-    # Return list of available PNG images in /images.
-    return {"images": []}
+    # Return list of available PNG images
+    images = [f for f in os.listdir(IMAGES_DIR) if f.lower().endswith((".png", ".jpg", ".jpeg", ".webp", ".bmp"))]
+    return {"images": sorted(images)}
 
 # above code was not working for me so added this but commented it out
 # @app.route("/image-list", methods=["GET"]) def image_list(): # >>> ADD THIS images = [] for f in os.listdir(IMAGES_DIR): if f.lower().endswith(".png"): images.append(f) return {"images": images}
@@ -22,7 +25,19 @@ def image_list():
 @app.route("/get-image/<filename>", methods=["GET"])
 def get_image(filename):
     # Return requested image and properties (format, original size, mode).
-    return {"filename": filename, "format": None, "size": None, "mode": None}, 404
+    filepath = os.path.join(IMAGES_DIR, filename)
+
+    if not os.path.exists(filepath):
+        return {"filename": filename, "format": None, "size": None, "mode": None}, 404
+
+    img = Image.open(filepath)
+    return {
+        "filename": filename,
+        "format": img.format,
+        "size": img.size,
+        "mode": img.mode,
+        "url": f"{request.host_url}images/{filename}"
+    }
 
 # above code was not working for me so I added this but commented it out
 # @app.route("/get-image/<filename>", methods=["GET"]) def get_image(filename): filepath = os.path.join(IMAGES_DIR, filename) if not os.path.exists(filepath): return {"filename": filename, "format": None, "size": None, "mode": None}, 404 img = Image.open(filepath) return { "filename": filename, "format": img.format, "size": img.size, "mode": img.mode, "url": f"{request.host_url}images/{filename}" }
@@ -93,48 +108,48 @@ if __name__ == "__main__":
     app.run(debug=True, use_reloader=False, port=5000, host="0.0.0.0")
 
 @app.errorhandler(400)
-def bad_request(error, code):
-    return jsonify({error: "Bad Request", code: 400})
+def bad_request(error):
+    return jsonify(error="Bad Request", code=400), 400
 
 @app.errorhandler(404)
-def not_found(error, code):
-    return jsonify({error: "Not Found", code: 404})
+def not_found(error):
+    return jsonify(error="Not Found", code=404), 404
 
 @app.errorhandler(500)
-def internal_error(error, code):
-    return jsonify({error: "Internal Server Error", code: 500})
+def internal_error(error):
+    return jsonify(error="Internal Server Error", code=500), 500
 
 @app.errorhandler(502)
-def bad_gateway(error, code):
-    return jsonify({error: "Bad Gateway", code: 502})
+def bad_gateway(error):
+    return jsonify(error="Bad Gateway", code=502), 502
 
 # Error handlers for OS and HTTP exceptions
 
 @app.errorhandler(HTTPException)
-def handle_http_error(exc, code):
+def handle_http_error(exc):
     # HTTP-related exceptions (400, 404, 500, etc.)
     return jsonify(error=exc.description or str(exc), code=exc.code), exc.code
 
 
 @app.errorhandler(FileNotFoundError)
-def handle_file_not_found(exc, code):
+def handle_file_not_found(exc):
     # OS-related exception: (file or directory does not exist)
     return jsonify(error="Not found", detail=str(exc), code=404), 404
 
 
 @app.errorhandler(PermissionError)
-def handle_permission_error(exc, code):
+def handle_permission_error(exc):
     # OS-related exception: (cannot read or write)
     return jsonify(error="Permission denied", detail=str(exc), code=403), 403
 
 
 @app.errorhandler(OSError)
-def handle_os_error(exc, code):
+def handle_os_error(exc):
     # OS-related exception: (other filesystem errors (path invalid, disk full, etc.))
     return jsonify(error="Server filesystem error", detail=str(exc), code=500), 500
 
 
 @app.errorhandler(Exception)
-def handle_generic_error(exc, code):
+def handle_generic_error(exc):
     # Unhandled exceptions.
     return jsonify(error="Internal server error", detail=str(exc), code=500), 500
