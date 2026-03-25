@@ -64,10 +64,9 @@ class DisplayBar(Frame):
         self.canvas.delete('all')
 
         # keep value within our sensor range
-        if value < 30:
-            value = 30
-        if value > 80:
-            value = 80
+        value = max(30, min(value, 80))
+
+
 
         # how much of the bar to fill (0.0 to 1.0)
         fill_pct = (value - 30) / (80 - 30)
