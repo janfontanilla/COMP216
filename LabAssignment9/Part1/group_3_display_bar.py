@@ -1,5 +1,6 @@
 from tkinter import Tk, Canvas, Frame, BOTH, W
 import tkinter as tk
+from tkinter import messagebox
 import threading
 import time
 import os
@@ -27,6 +28,19 @@ class DisplayBar(Frame):
 
         # draw with a starting value
         self.draw_bar(50)
+
+        # ----------- ADDED PART (entry + button) -----------
+        input_frame = tk.Frame(self)
+        input_frame.pack(pady=10)
+
+        tk.Label(input_frame, text="Enter latency (ms):").pack(side=tk.LEFT)
+
+        self.entry = tk.Entry(input_frame, width=10)
+        self.entry.pack(side=tk.LEFT, padx=5)
+
+        tk.Button(input_frame, text="Update", command=self.update_value)\
+            .pack(side=tk.LEFT)
+        # ---------------------------------------------------
 
     def draw_bar(self, value):
         self.canvas.delete('all')  # clear old drawing
@@ -77,6 +91,15 @@ class DisplayBar(Frame):
         self.canvas.create_text(150, 170,
                                 font='Helvetica 12',
                                 text=f'{value} ms')
+
+    # ----------- ADDED FUNCTION -----------
+    def update_value(self):
+        try:
+            value = int(self.entry.get())
+            self.draw_bar(value)
+        except:
+            messagebox.showerror("Error", "Please enter a valid number")
+    # -------------------------------------
 
 
 root = Tk()
