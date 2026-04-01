@@ -14,6 +14,10 @@ SENDER_EMAIL = 'mbaig77@my.centennialcollege.ca'
 RECPT_EMAIL = ['mbaig77@my.centennialcollege.ca', 'mohammadbaig.centennial@gmail.com']
 
 # Send an out-of-range alert email. Runs in a background thread.
+
+# TODO: Change send_alert_email function so it's called within range checks, for more usability
+# TODO: Change try/except block so that it isn't doing a login everytime it sends an email alert. 
+
 def send_alert_email(value):
 
     if value < 30:
