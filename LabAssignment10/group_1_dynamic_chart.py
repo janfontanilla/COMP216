@@ -28,7 +28,7 @@ class DynamicChart:
             self.display_chart() #display the list on the canvas
             
             # ENTRY WIDGET 
-            # delay = float(self.entry.get()) if self.entry.get() else 0.5
+            delay = float(self.entry.get()) if self.entry.get() else 0.5
             
             time.sleep(0.5)  # change to time.sleep(delay) if entry widget is active
     
@@ -42,13 +42,16 @@ class DynamicChart:
             self.canvas.create_line(x1, y1, x2, y2, fill="red", width=2)
 
     def initUI(self):
-        #self.entry.destroy()
         
         # ENTRY WIDGET
-        # tk.Label(self.root, text="Update delay (seconds):").pack(side=tk.LEFT, padx=5)
-        # self.entry = tk.Entry(self.root, width=5)
-        # self.entry.pack(side=tk.LEFT)        
+        tk.Label(self.root, text="Update delay (seconds):").pack(side=tk.LEFT, padx=5)
+        self.entry = tk.Entry(self.root, width=5)
+        self.entry.pack(side=tk.LEFT)  
 
+              
+        self.entry.destroy()
+
+        #threads
         self.update_thread = threading.Thread(target=self.update_data)
         self.update_thread.daemon = True
         self.update_thread.start()
