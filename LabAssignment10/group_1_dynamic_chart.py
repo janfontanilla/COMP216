@@ -27,11 +27,10 @@ class DynamicChart:
             self.values.append(random.randint(10, 100)) #add a new random value to the end of the list
             self.display_chart() #display the list on the canvas
             
-            # ENTRY WIDGET - comment out this line to use a fixed delay instead
-            delay = float(self.entry.get()) if self.entry.get() else 0.5
-            # END ENTRY WIDGET
+            # ENTRY WIDGET 
+            # delay = float(self.entry.get()) if self.entry.get() else 0.5
             
-            time.sleep(delay)  # change to time.sleep(0.5) if entry widget is commented out
+            time.sleep(0.5)  # change to time.sleep(delay) if entry widget is active
     
     def display_chart(self):
         self.canvas.delete("all")
@@ -45,11 +44,10 @@ class DynamicChart:
     def initUI(self):
         #self.entry.destroy()
         
-        # ENTRY WIDGET - comment out these 3 lines to remove the entry widget
-        tk.Label(self.root, text="Update delay (seconds):").pack(side=tk.LEFT, padx=5)
-        self.entry = tk.Entry(self.root, width=5)
-        self.entry.pack(side=tk.LEFT)
-        # END ENTRY WIDGET
+        # ENTRY WIDGET
+        # tk.Label(self.root, text="Update delay (seconds):").pack(side=tk.LEFT, padx=5)
+        # self.entry = tk.Entry(self.root, width=5)
+        # self.entry.pack(side=tk.LEFT)        
 
         self.update_thread = threading.Thread(target=self.update_data)
         self.update_thread.daemon = True
