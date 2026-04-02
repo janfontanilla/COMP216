@@ -24,3 +24,11 @@ class DynamicChart:
     
     def display_chart(self):
         pass
+
+    def initUI(self):
+        
+        #self.entry.destroy()
+
+        self.update_thread = threading.Thread(target=self.update_data)
+        self.update_thread.daemon = True
+        self.update_thread.start()
