@@ -9,19 +9,23 @@ class DynamicChart:
         self.root = root
         self.root.title("Dynamic Time Series Chart")
         self.root.geometry("600x400")
-        
-        self.values = [random.randint(10, 100) for _ in range(20)]
-        
+
+        # create a values list with random values
+        self.values = [random.randint(10, 100) for _ in range(20)] #initialize data list
+
+        # canvas added
         self.canvas = tk.Canvas(self.root, width=600, height=350, bg="white")  # reduced height to make room
         self.canvas.pack()
-        
+
+        # start UI
         self.initUI()
-    
+
+    # part A: update data in a separate thread
     def update_data(self):
         while True:
             self.values.pop(0)
-            self.values.append(random.randint(10, 100))
-            self.display_chart()
+            self.values.append(random.randint(10, 100)) #add a new random value to the end of the list
+            self.display_chart() #display the list on the canvas
             
             # ENTRY WIDGET - comment out this line to use a fixed delay instead
             delay = float(self.entry.get()) if self.entry.get() else 0.5
@@ -39,6 +43,8 @@ class DynamicChart:
             self.canvas.create_line(x1, y1, x2, y2, fill="red", width=2)
 
     def initUI(self):
+        #self.entry.destroy()
+        
         # ENTRY WIDGET - comment out these 3 lines to remove the entry widget
         tk.Label(self.root, text="Update delay (seconds):").pack(side=tk.LEFT, padx=5)
         self.entry = tk.Entry(self.root, width=5)
