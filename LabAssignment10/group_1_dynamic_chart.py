@@ -53,7 +53,7 @@ class DynamicChart:
 
         #threads
         self.update_thread = threading.Thread(target=self.update_data)
-        self.update_thread.daemon = True
+        self.update_thread.daemon = True #runs thread outside of main 
         self.update_thread.start()
 
 root = tk.Tk()
