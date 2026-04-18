@@ -8,9 +8,10 @@ import threading
 from group_3_data_generator import Util
 
 # SMTP Config
-SMTP_SERVER = 'smtp.mailgun.org'
-USER_NAME = 'mohammadbaig@sandboxd26a75a6d36f488a98c409657038597a.mailgun.org' 
-PASSWORD = 'eb7718cd91b8b41da4c44e6885ae7ede-c50aa110-853cddfb'  
+SMTP_SERVER = 'smtp.gmail.com'
+PORT = 587
+USER_NAME = 'mohammadbaig.centennial@gmail.com' 
+PASSWORD = 'gzriiybcrzagtsny'  
 RECPT_EMAIL = 'mbaig77@my.centennialcollege.ca'
 
 class SubscriberGUI:
@@ -64,7 +65,7 @@ class SubscriberGUI:
         self.info_label.config(text="Subscribed to topic 'group3/vitals'. Waiting for data...")
 
     def on_message(self, client, userdata, msg):
-        """[Final Project: Decode the message and decide how to process it]"""
+        """Decode the message and decide how to process it"""
         try:
             data = json.loads(msg.payload.decode())
             
@@ -101,7 +102,7 @@ class SubscriberGUI:
         self.draw_chart()
 
     def draw_chart(self):
-        """[Assignment 10: Dynamic X and Y axis mapping & Multiple lines]"""
+        """Dynamic X and Y axis mapping & Multiple lines"""
         self.canvas.delete("all")
         if not self.hr_history: return
 
@@ -139,13 +140,16 @@ class SubscriberGUI:
             msg['From'] = USER_NAME
             msg['To'] = RECPT_EMAIL
             
-            with smtplib.SMTP(SMTP_SERVER, 587) as server:
-                server.starttls()
-                server.login(USER_NAME, PASSWORD)
-                server.send_message(msg)
+            server = smtplib.SMTP(SMTP_SERVER, PORT)
+            server.starttls() # Secure the connection
+            server.login(USER_NAME, PASSWORD)
+            server.send_message(msg)
+            server.quit()
             
             # Uses after() to update UI safely from thread
-            self.root.after(0, self.log_alert, f"SMTP: Alert email successfully sent to {RECPT_EMAIL}", "black")
+            self.root.after(0, self.log_alert, f"SMTP: Gmail Alert sent to {RECPT_EMAIL}", "green")
+        except smtplib.SMTPAuthenticationError:
+            self.root.after(0, self.log_alert, "SMTP Error: Gmail Authentication Failed (Check App Password)")
         except Exception as e:
             self.root.after(0, self.log_alert, f"SMTP Error: {e}")
 
