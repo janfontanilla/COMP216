@@ -1,37 +1,54 @@
-import json
+import math
 import random
-from time import asctime
 
-class Util:
-    def __init__(self):
-        self.start_id = 100
-        self.patient = {'name': 'John Doe', 'room': '204B'}
- 
-    def create_data(self) -> dict:
-        """Generates realistic patient vitals using Gaussian distribution."""
-        self.start_id += 1
-        return {
-            'id': self.start_id,
-            'patient': self.patient,
-            'time': asctime(),
-            'heart_rate': int(random.gauss(75, 5)),
-            'respiratory_rate': int(random.gauss(16, 2)),
-            'heart_rate_variability': int(random.gauss(50, 10)),
-            'body_temperature': round(random.gauss(98.6, 0.5), 1),
-            'blood_pressure': {
-                'systolic': int(random.gauss(120, 10)),
-                'diastolic': int(random.gauss(80, 5))
-            },
-            'activity': random.choice(['Resting', 'Sleeping', 'Walking'])
-        }
+# based on lab 8 DataGenerator — sine + noise gives "random with a pattern"
 
-    def mutate_data(self, data: dict) -> dict:
-        """Intentionally corrupts data for testing anomaly detection."""
-        # Simulate a sensor error (extremely high temperature or negative heart rate)
-        data['heart_rate'] = -1 
-        data['body_temperature'] = 115.0
-        return data
+class DataGenerator:
+    def __init__(self, base=80, amplitude=8, period=30, noise_std=1.5,
+                 wild_prob=0.0, skip_block_prob=0.0):
+        self.base = base                   # centre of the sine (baseline bpm)
+        self.amplitude = amplitude         # how far the sine swings up/down
+        self.period = period               # ticks per full cycle
+        self.noise_std = noise_std         # random jitter on top of the sine
+        self.wild_prob = wild_prob         # chance of a spike (bonus)
+        self.skip_block_prob = skip_block_prob   # chance of a sensor-offline burst (bonus)
+        self._t = 0                        # tick counter, keeps counting up
+        self._skip_left = 0                # ticks left in the current skip burst
 
-    @staticmethod
-    def print_data(data):
-        print(f"[{data['id']}] {data['time']} | HR: {data['heart_rate']} | Temp: {data['body_temperature']}°F")
+    def random_values(self):
+        # still inside a skip burst — return None so publisher drops this tick
+        if self._skip_left > 0:
+            self._skip_left -= 1
+            self._t += 1
+            return None
+
+        # maybe start a new skip burst (sensor going offline for a few ticks)
+        if self.skip_block_prob > 0 and random.random() < self.skip_block_prob:
+            self._skip_left = random.randint(5, 15)
+            self._t += 1
+            return None
+
+        # sine wave + gaussian noise — this is the "pattern with randomness"
+        sine = self.amplitude * math.sin(2 * math.pi * self._t / self.period)
+        value = self.base + sine + random.gauss(0, self.noise_std)
+        self._t += 1
+
+        # rare off-chart spike to simulate a sensor glitch
+        if self.wild_prob > 0 and random.random() < self.wild_prob:
+            value *= 3
+
+        return int(value)
+
+    @property
+    def value_return(self):
+        return self.random_values
+
+    def plot_random_data(self, number_of_data_values: int = 30):
+        for _ in range(number_of_data_values):
+            v = self.random_values()
+            print(v)
+
+
+if __name__ == "__main__":
+    generator = DataGenerator(wild_prob=0.05, skip_block_prob=0.05)
+    generator.plot_random_data()

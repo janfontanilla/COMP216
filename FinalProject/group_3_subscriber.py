@@ -5,7 +5,7 @@ import json
 import smtplib
 from email.mime.text import MIMEText
 import threading
-from group_3_data_generator import Util
+from group_3_util import Util
 
 # SMTP Config
 SMTP_SERVER = 'smtp.gmail.com'
